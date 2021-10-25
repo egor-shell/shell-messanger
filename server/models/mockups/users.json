@@ -43,5 +43,11 @@
         "chatId": "rootChecked"
       }
     ]
+  },
+  {
+    "username": "egor",
+    "id": 4,
+    "password": "egor",
+    "chats": []
   }
 ]

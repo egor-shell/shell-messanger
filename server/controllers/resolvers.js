@@ -6,7 +6,8 @@ const {Op} = require("sequelize");
 const {Chat} = require("../models/chat");
 const {nanoid} = require("nanoid");
 const sequelize = require("../models/db");
-const {PubSub} = require("graphql-subscriptions");
+const {PubSub, withFilter} = require("graphql-subscriptions");
+const colors = require('colors')
 
 const pubSub = new PubSub()
 
@@ -51,8 +52,26 @@ const resolvers = {
             return users
         },
         getChat: async (_, { usersId }) => {
+            // const { usersId, chatId } = input
+            let chat
+            // if(chatId) {
+            //     chat = await Chat.findOne({
+            //         where: {chatId},
+            //         raw: true
+            //     })
+            //     console.log(colors.blue(chat))
+            // } else {
+                chat = await Chat.findOne({
+                    where: { usersId: usersId },
+                    raw: true
+                })
+            // }
+            return chat
+        },
+        removeMessage: async (_, { input }) => {
+            const { chatId, messageId } = input
             const chat = await Chat.findOne({
-                where: { usersId: usersId },
+                where: {chatId},
                 raw: true
             })
             return chat
@@ -76,7 +95,8 @@ const resolvers = {
                 await User.create({
                     id: id,
                     username: username,
-                    password: hashPassword
+                    password: hashPassword,
+                    chats: []
                 }).then(res => {
                     return res.dataValues
                 }).catch(err => console.log(`USER CREATE ERROR: ${err}`))
@@ -104,7 +124,6 @@ const resolvers = {
         },
         checkAuth: async (_, { input }) => {
             const { username } = input
-            console.log(username)
             const user = await User.findOne({
                 where: { username },
                 raw: true
@@ -118,6 +137,7 @@ const resolvers = {
         },
         addMessage: async (_, { input }) => {
             const { messageText, senderName, userId, usersId, chatId, messageId } = input
+            console.log(colors.red(usersId))
             let newMessage = { userId, messageText, senderName, messageId }
             let checkChat = await Chat.findOne({
                 where: { chatId: chatId },
@@ -129,6 +149,27 @@ const resolvers = {
                     chatId: chatId,
                     messages: []
                 })
+                const newChat = {
+                    usersId,
+                    chatId
+                }
+                usersId.map(async (userId) => {
+                    await User.update({
+                        chats: sequelize.fn(
+                            'array_append',
+                            sequelize.col('chats'),
+                            JSON.stringify(newChat)
+                        )
+                    }, {
+                        where: {id: userId}
+                    })
+                    const user = await User.findOne({
+                        where: {id: userId},
+                        raw: true
+                    })
+                    pubSub.publish('CHAT_ADD', { newChat: user }).then(() => console.log('CHAT_ADD'))
+                })
+
             }
             await Chat.update({
                 messages: sequelize.fn(
@@ -149,10 +190,23 @@ const resolvers = {
     },
     Subscription: {
         newMessage: {
-            subscribe: async () => {
-                console.log('SUB')
-                return pubSub.asyncIterator(['MESSAGE_ADD'])
-            }
+            subscribe: withFilter(
+                () => pubSub.asyncIterator('MESSAGE_ADD'),
+                (payload, variables) => {
+                    return (payload.newMessage.chatId === variables.input.chatId)
+                }
+            )
+        },
+        newChat: {
+            subscribe: withFilter(
+                () => pubSub.asyncIterator('CHAT_ADD'),
+                (payload, { input }) => {
+                    console.log(payload)
+                    console.log(input)
+                    return (payload.newChat.id === input.usersId[0] || payload.newChat.id === input.usersId[1])
+
+                }
+            )
         }
     }
 }

@@ -1,20 +1,22 @@
 // NPM
 import React from "react";
 import { Button, Card, Container, Form, Row } from 'react-bootstrap'
-import { NavLink, useLocation } from 'react-router-dom'
+import {NavLink, useHistory, useLocation} from 'react-router-dom'
 import {useMutation} from "@apollo/client";
 import jwt_decode from "jwt-decode";
 import {useDispatch, useSelector} from "react-redux";
 
 // Files
 import {LOGIN_ROUTE, REGISTRATION_ROUTE} from "../../utils/urlpath";
-import {CHECK_USER, LOGIN_USER} from "../../mutations/mutations";
+import {CHECK_USER, LOGIN_USER, REGISTER_USER} from "../../mutations/mutations";
 import {auth, logout, selectValue} from "../../features/isAuth/isAuth";
 import {setId} from "../../features/id/idSlice";
+import {adjustUsername} from "../../features/username/usernameSlice";
 
 const Auth = () => {
     const location = useLocation()
     const isLogin = location.pathname === LOGIN_ROUTE
+    const history = useHistory()
 
     // State
     const [username, setUsername] = React.useState('')
@@ -25,6 +27,7 @@ const Auth = () => {
     const dispatch = useDispatch()
 
     // GraphQL
+    const [registerUser] = useMutation(REGISTER_USER)
     const [loginUser] = useMutation(LOGIN_USER)
     const [checkUser] = useMutation(CHECK_USER)
 
@@ -44,8 +47,21 @@ const Auth = () => {
                 setPassword('')
                 localStorage.setItem('token', data.login.token)
                 user = jwt_decode(data.login.token)
-                dispatch(setId(user.id))
+            } else {
+                const { data: dataRegister } = await registerUser({
+                    variables: {
+                        input: {
+                            username, password
+                        }
+                    }
+                })
+                setUsername('')
+                setPassword('')
+                localStorage.setItem('token', dataRegister.registration.token)
+                user = jwt_decode(dataRegister.registration.token)
             }
+            dispatch(setId(user.id))
+            dispatch(adjustUsername(user.username))
             dispatch(auth())
         } catch (e) {
             console.log(e)
@@ -56,6 +72,7 @@ const Auth = () => {
     const secondClick = async () => {
         const token = localStorage.getItem('token')
         const decode = jwt_decode(token)
+
         const { data } = await checkUser({
             variables: {
                 input: {
@@ -63,8 +80,18 @@ const Auth = () => {
                 }
             }
         })
-        localStorage.setItem('token', data.checkAuth.token)
+        if(data.checkAuth === null || !data.checkAuth) {
+            dispatch(logout())
+            localStorage.removeItem('token')
+        } else {
+            localStorage.setItem('token', data.checkAuth.token)
+        }
     }
+
+    if(isAuth === false) {
+        localStorage.removeItem('token')
+    }
+
 
     return (
         <Container

@@ -4,19 +4,19 @@ import {Form} from "react-bootstrap";
 import {useMutation, useQuery, useSubscription} from "@apollo/client";
 import {GET_CHAT} from "../../query/query";
 import {useSelector} from "react-redux";
-import {selectId} from "../../features/id/idSlice";
 import {SEND_MESSAGE} from "../../mutations/mutations";
 import {Button} from "react-bootstrap";
 import {FiSend} from "react-icons/all";
 import {nanoid} from "@reduxjs/toolkit";
-import {MESSAGE_ADD} from "../../subscribe/sub";
+import {CHAT_ADD, MESSAGE_ADD} from "../../subscribe/sub";
+import {selectUsersId} from "../../features/usersId/usersIdSlice";
 
-export const SendMessage = ({ username, userId, chatId }) => {
+export const SendMessage = ({ username, userId, chatId, update }) => {
     // State
     const [text, setText] = useState('')
     const id = nanoid(8)
     // Redux
-    const usersId = useSelector(selectId)
+    const usersId = useSelector(selectUsersId)
     // GraphQL
     const {data: dataChat, refetch} = useQuery(GET_CHAT, {
         variables: {
@@ -24,11 +24,20 @@ export const SendMessage = ({ username, userId, chatId }) => {
         }
     })
     const [addMessage] = useMutation(SEND_MESSAGE)
+    // const {loading: loadingUsers} = useSubscription(CHAT_ADD, {
+    //     variables: {
+    //         input: {
+    //             usersId: usersId
+    //         }
+    //     }
+    // })
 
 
     const sendMessage = (e) => {
         e.preventDefault()
-        refetch().then(() => console.log('REFETCH'))
+        update().then((data) => {
+            return data
+        })
         const trimmed = text.trim()
         if(trimmed) {
             const message = {
@@ -37,6 +46,7 @@ export const SendMessage = ({ username, userId, chatId }) => {
                 userId: userId
             }
         }
+        console.log(usersId)
         addMessage({
             variables: {
                 input: {
@@ -49,7 +59,7 @@ export const SendMessage = ({ username, userId, chatId }) => {
                 }
             }
         }).then(({data}) => {
-            console.log(`Сообщение отправлено ${data}`)
+            return data
         })
         setText('')
     }

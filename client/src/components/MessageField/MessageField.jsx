@@ -1,12 +1,9 @@
 // NPM
 import React from "react";
-import {useSelector} from "react-redux";
-import {Container, ListGroup} from "react-bootstrap";
-import {useQuery, useSubscription} from "@apollo/client";
+import {Container, ListGroup, Spinner} from "react-bootstrap";
+import {useSubscription} from "@apollo/client";
 
 // Files
-import {selectUsersId} from "../../features/usersId/usersIdSlice";
-import {GET_CHAT} from "../../query/query";
 import {Message} from "../Message/Message";
 import {MESSAGE_ADD} from "../../subscribe/sub";
 
@@ -29,28 +26,14 @@ const notMessage = {
     width: '100%'
 }
 
-export const MessageField = ({ messages }) => {
-    const usersId = useSelector(selectUsersId)
+export const MessageField = ({ messages, chatId, oldMessage }) => {
+    console.log(messages)
     const messagesEndRef = React.useRef(null)
-    const { refetch } = useQuery(GET_CHAT, {
-        variables: {
-            usersId: usersId
-        }
-    })
-    const { data: subMessage, loading: loadMessage } = useSubscription(MESSAGE_ADD)
-    if(subMessage) {
-        console.log(subMessage)
-        messages = subMessage.newMessage.messages
-    }
-
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
     React.useEffect(() => {
         scrollToBottom()
-        refetch().then(() => {
-            return console.log('REFETCH MESSAGES')
-        })
     }, [messages])
     if(!messages) {
         return (
@@ -59,12 +42,17 @@ export const MessageField = ({ messages }) => {
             </Container>
         )
     }
+    // if(loadMessages) {
+    //     return (
+    //         <Spinner animation='border'/>
+    //     )
+    // }
     return (
         <ListGroup variant='flush' style={listStyles}>
             {messages.map((msg) => (
                 <Message key={msg.messageId} msg={msg}/>
             ))}
-            <span ref={messagesEndRef}></span>
+            <span ref={messagesEndRef}/>
         </ListGroup>
     )
 }

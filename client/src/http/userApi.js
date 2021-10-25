@@ -1,11 +1,13 @@
 // NPM
+import React from "react";
 import { useMutation } from "@apollo/client";
 import jwt_decode from 'jwt-decode'
 
 // Files
 import { CHECK_USER } from '../mutations/mutations'
 
-export const check = async () => {
+const Check = async () => {
+    const [checkUser] = useMutation(CHECK_USER)
     const token = localStorage.getItem('token')
     const decode = jwt_decode(token)
     const { data } = await checkUser({
@@ -13,5 +15,9 @@ export const check = async () => {
             username: decode.username
         }
     })
+    console.log(data)
+    return data
 
 }
+
+export default Check

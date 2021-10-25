@@ -43,12 +43,24 @@ const typeDefs = gql`
         chatId: String!
         usersId: [Int]!
     }
+    input ChatInput {
+        chatId: String
+        usersId: [Int]
+    }
+    input UserInput {
+        usersId: [Int]!
+    }
+    input RemoveMessageInput {
+        chatId: String!
+        messageId: String!
+    }
     type Query {
         getAllUsers: [User]
         getUser(id: ID): User
         getAllChat: [Chat]
         getUserForChat(usersId: [[Int]]): [User],
         getChat(usersId: [Int]): Chat
+        removeMessage(input: RemoveMessageInput): Chat
     }
     type Mutation {
         registration(input: registerUserInput): User
@@ -57,7 +69,8 @@ const typeDefs = gql`
         addMessage(input: MessageInput): Message
     }
     type Subscription {
-        newMessage: Chat
+        newMessage(input: ChatInput): Chat
+        newChat(input: UserInput): User
     }
 `
 

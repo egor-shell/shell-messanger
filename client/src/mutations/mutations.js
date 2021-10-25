@@ -1,5 +1,12 @@
 import { gql } from '@apollo/client'
 
+export const REGISTER_USER = gql`
+    mutation registration($input: registerUserInput) {
+        registration(input: $input) {
+            token
+        }
+    }
+`
 export const LOGIN_USER = gql`
     mutation login($input: loginUserInput) {
         login(input: $input) {

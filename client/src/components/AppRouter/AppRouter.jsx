@@ -29,6 +29,7 @@ export const AppRouter = () => {
                     }
                 }
             })
+            localStorage.setItem('token', data.checkAuth.token)
             if(data) {
                 dispatch(auth())
                 dispatch(setId(decode.id))

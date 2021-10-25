@@ -7,18 +7,21 @@ import {selectId} from "../../features/id/idSlice";
 import {Button} from "bootstrap";
 
 export const Message = ({ msg }) => {
-    const { messageText, senderName, userId } = msg
     const idUser = useSelector(selectId)
-    // msg.userId === userId ? msg.currentUser = true : msg
-    if(userId === idUser) {
+    if(msg.userId === idUser) {
         msg = {...msg, currentUser: true}
+    }
+    const { messageText, senderName, currentUser } = msg
+
+    const handleRemoveMsg = (id) => {
+
     }
     return (
         <ListGroup.Item
-            className={`d-flex ${msg.currentUser ? 'justify-content-end' : ''}`}
+            className={`d-flex ${currentUser ? 'justify-content-end' : ''}`}
         >
             <Card
-                bg={`${msg.currentUser ? 'primary' : 'secondary'}`}
+                bg={`${currentUser ? 'primary' : 'secondary'}`}
                 text='light'
                 style={{ width: '55%' }}
             >
