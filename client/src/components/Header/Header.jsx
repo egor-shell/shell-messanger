@@ -10,6 +10,8 @@ import {GET_USER} from "../../query/query";
 import {selectId} from "../../features/id/idSlice";
 import {logout} from "../../features/isAuth/isAuth";
 import {LOGIN_ROUTE} from "../../utils/urlpath";
+import {BiExit} from "react-icons/all";
+import './Header.css'
 
 export const Header = () => {
     // Redux
@@ -29,13 +31,13 @@ export const Header = () => {
     }
 
     return (
-        <div className='d-flex justify-content-around m-3'>
-            <h2>{userData.getUser.username}</h2>
-            <NavLink to={LOGIN_ROUTE}>
+        <div className='d-flex justify-content-center flex-column header align-items-center'>
+            <NavLink to={LOGIN_ROUTE} className='header-exit'>
                 <Button
                     onClick={click}
+                    className='header-exitBtn'
                 >
-                    Выйти
+                    <BiExit size={25}/>
                 </Button>
             </NavLink>
         </div>

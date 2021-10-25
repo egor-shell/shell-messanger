@@ -51,21 +51,20 @@ const resolvers = {
             })
             return users
         },
-        getChat: async (_, { usersId }) => {
-            // const { usersId, chatId } = input
+        getChat: async (_, { input }) => {
+            const { usersId, chatId } = input
             let chat
-            // if(chatId) {
-            //     chat = await Chat.findOne({
-            //         where: {chatId},
-            //         raw: true
-            //     })
-            //     console.log(colors.blue(chat))
-            // } else {
+            if(chatId) {
+                chat = await Chat.findOne({
+                    where: {chatId},
+                    raw: true
+                })
+            } else {
                 chat = await Chat.findOne({
                     where: { usersId: usersId },
                     raw: true
                 })
-            // }
+            }
             return chat
         },
         removeMessage: async (_, { input }) => {

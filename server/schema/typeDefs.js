@@ -59,7 +59,7 @@ const typeDefs = gql`
         getUser(id: ID): User
         getAllChat: [Chat]
         getUserForChat(usersId: [[Int]]): [User],
-        getChat(usersId: [Int]): Chat
+        getChat(input: ChatInput): Chat
         removeMessage(input: RemoveMessageInput): Chat
     }
     type Mutation {

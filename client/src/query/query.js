@@ -27,9 +27,18 @@ export const GET_USERS = gql`
         }
     }
 `
+// export const GET_CHAT = gql`
+//     query getChat($usersId: [Int]) {
+//         getChat(usersId: $usersId) {
+//             chatId, messages {
+//                 messageText, senderName, userId, messageId
+//             }
+//         }
+//     }
+// `
 export const GET_CHAT = gql`
-    query getChat($usersId: [Int]) {
-        getChat(usersId: $usersId) {
+    query getChat($input: ChatInput) {
+        getChat(input: $input) {
             chatId, messages {
                 messageText, senderName, userId, messageId
             }

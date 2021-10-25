@@ -12,6 +12,7 @@ import {CHECK_USER, LOGIN_USER, REGISTER_USER} from "../../mutations/mutations";
 import {auth, logout, selectValue} from "../../features/isAuth/isAuth";
 import {setId} from "../../features/id/idSlice";
 import {adjustUsername} from "../../features/username/usernameSlice";
+import './Auth.css'
 
 const Auth = () => {
     const location = useLocation()
@@ -98,20 +99,21 @@ const Auth = () => {
             className='d-flex justify-content-center align-items-center'
             style={{height: window.innerHeight}}
         >
-            <Card style={{width: 600}} className='p-5'>
+            <Card style={{width: 600}} className='p-5 auth'>
                 <h2 className='m-auto'>{isLogin ? 'Авторизация' : 'Регистрация'}</h2>
                 {isLogin ?
                     <Form className='d-flex flex-column'>
                         <Form.Control
-                            className='mt-3'
+                            className='mt-3 auth-input'
                             placeholder='Введите логин'
                             value={username}
                             onChange={e => setUsername(e.target.value)}
                         />
                         <Form.Control
-                            className='mt-3'
+                            className='mt-3 auth-input'
                             placeholder='Введите пароль'
                             value={password}
+                            type='password'
                             onChange={e => setPassword(e.target.value)}
                         />
                         <Row className='d-flex justify-content-between mt-3 pl-3 pr-3'>
@@ -121,26 +123,22 @@ const Auth = () => {
                             <Button
                                 variant={'outline-success'}
                                 onClick={click}
+                                className='auth-button'
                             >
                                 Войти
-                            </Button><Button
-                                variant={'outline-success'}
-                                onClick={secondClick}
-                            >
-                                SEND DARA
                             </Button>
                         </Row>
                     </Form>
                     :
                     <Form className='d-flex flex-column'>
                         <Form.Control
-                            className='mt-3'
+                            className='mt-3 auth-input'
                             placeholder='Введите логин'
                             value={username}
                             onChange={e => setUsername(e.target.value)}
                         />
                         <Form.Control
-                            className='mt-3'
+                            className='mt-3 auth-input'
                             placeholder='Введите пароль'
                             value={password}
                             onChange={e => setPassword(e.target.value)}
@@ -152,6 +150,7 @@ const Auth = () => {
                             <Button
                                 variant={'outline-success'}
                                 onClick={click}
+                                className='auth-button'
                             >
                                 Зарегестрироваться
                             </Button>

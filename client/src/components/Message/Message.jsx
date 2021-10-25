@@ -4,7 +4,7 @@ import {Card, ListGroup} from "react-bootstrap";
 import {useSelector} from "react-redux";
 // Files
 import {selectId} from "../../features/id/idSlice";
-import {Button} from "bootstrap";
+import './Message.css'
 
 export const Message = ({ msg }) => {
     const idUser = useSelector(selectId)
@@ -18,10 +18,11 @@ export const Message = ({ msg }) => {
     }
     return (
         <ListGroup.Item
-            className={`d-flex ${currentUser ? 'justify-content-end' : ''}`}
+            className={`d-flex ${currentUser ? 'justify-content-end' : ''} message-el`}
         >
             <Card
-                bg={`${currentUser ? 'primary' : 'secondary'}`}
+                // bg={`${currentUser ? 'primary' : 'secondary'}`}
+                className={`${currentUser ? 'message-from' : 'message-to'} message-item`}
                 text='light'
                 style={{ width: '55%' }}
             >

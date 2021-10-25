@@ -11,6 +11,9 @@ import {nanoid} from "@reduxjs/toolkit";
 import {CHAT_ADD, MESSAGE_ADD} from "../../subscribe/sub";
 import {selectUsersId} from "../../features/usersId/usersIdSlice";
 
+// Files
+import './SendMessage.css'
+
 export const SendMessage = ({ username, userId, chatId, update }) => {
     // State
     const [text, setText] = useState('')
@@ -24,13 +27,6 @@ export const SendMessage = ({ username, userId, chatId, update }) => {
         }
     })
     const [addMessage] = useMutation(SEND_MESSAGE)
-    // const {loading: loadingUsers} = useSubscription(CHAT_ADD, {
-    //     variables: {
-    //         input: {
-    //             usersId: usersId
-    //         }
-    //     }
-    // })
 
 
     const sendMessage = (e) => {
@@ -46,7 +42,6 @@ export const SendMessage = ({ username, userId, chatId, update }) => {
                 userId: userId
             }
         }
-        console.log(usersId)
         addMessage({
             variables: {
                 input: {
@@ -67,16 +62,17 @@ export const SendMessage = ({ username, userId, chatId, update }) => {
     return (
         <div className="Send-field">
             <Form onSubmit={sendMessage}>
-                <Form.Group className='d-flex'>
+                <Form.Group className='d-flex justify-content-center sendMessage-el'>
                     <Form.Control
                         value={text}
                         onChange={e => setText(e.target.value)}
                         type='text'
                         placeholder='Сообщение...'
+                        className='sendMessage-input'
                     />
                     <Button
-                        variant='success'
                         type='submit'
+                        className='sendMessage-send'
                     >
                         <FiSend/>
                     </Button>

@@ -10,6 +10,9 @@ import {Link} from "react-router-dom";
 import {selectId} from "../../features/id/idSlice";
 import {selectUsersId, setUsersId} from "../../features/usersId/usersIdSlice";
 import {CHAT_ADD} from "../../subscribe/sub";
+import './users.css'
+import {BiSearch} from "react-icons/all";
+import {adjustUser} from "../../features/userSlice/userSile";
 
 
 const Users = ({ username }) => {
@@ -27,7 +30,9 @@ const Users = ({ username }) => {
     const {data: dataUsers, loading: loadUsers, refetch: refetchUsers} = useQuery(GET_USERS)
     const {loading: loadChat} = useQuery(GET_CHAT, {
         variables: {
-            usersId: idUsers
+            input: {
+                usersId: idUsers
+            }
         }
     })
     const {data: subUsers} = useSubscription(CHAT_ADD, {
@@ -49,7 +54,6 @@ const Users = ({ username }) => {
     users = dataUsers.getAllUsers
 
     const chatWithUsers = users.find(user => String(user.id) === String(userId))
-    console.log(chatWithUsers)
     if(chatWithUsers) {
         const chats = chatWithUsers.chats
         const idUserChats = []
@@ -73,13 +77,14 @@ const Users = ({ username }) => {
     }
     return (
         <Container>
-            <h3>Контакты</h3>
+            <h3 className='users-messagesHead'>Сообщения</h3>
             <InputGroup>
                 <FormControl
-                    placeholder='Введите ник...'
+                    placeholder={'Введите имя...'}
                     onChange={(event => {
                         setSearch(event.target.value)
                     })}
+                    className='users_search'
                 />
             </InputGroup>
             <ListGroup variant={"flush"}>
@@ -112,16 +117,20 @@ const Users = ({ username }) => {
                                 chatId = currentChat.chatId
                                 dispatch(setUsersId(currentChat.usersId))
                             }
+                            localStorage.setItem('user', user.username)
 
                         }}
                         to={() => `/im/${chatId}`}
                         key={user.id}
+                        className='user-link'
                     >
-                        <ListGroup.Item
+                        <li
                             className='user-item'
                         >
-                            {user.username}
-                        </ListGroup.Item>
+                            <h4 className='user-name'>
+                                {user.username}
+                            </h4>
+                        </li>
                     </Link>
                 ))}
             </ListGroup>

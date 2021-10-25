@@ -15,6 +15,8 @@ import {MessageField} from "../MessageField/MessageField";
 import {SendMessage} from "../SendMessage/SendMessage";
 import {selectUsersId} from "../../features/usersId/usersIdSlice";
 import {MESSAGE_ADD} from "../../subscribe/sub";
+import './Layout.css'
+import {UserInfo} from "../UserInfo/UserInfo";
 
 export function Layout() {
     const location = useLocation()
@@ -35,7 +37,10 @@ export function Layout() {
     console.log(usersId)
     const { data: dataChat, loading: loadChat, refetch: refChat } = useQuery(GET_CHAT, {
         variables: {
-            usersId: usersId
+            input: {
+                usersId: usersId,
+                chatId: roomId
+            }
         }
     })
     const { data: subMessage, loading: loadMessage } = useSubscription(MESSAGE_ADD, {
@@ -56,8 +61,10 @@ export function Layout() {
     React.useEffect(() => {
         document.addEventListener("keydown", escFunc, false)
         const path = localStorage.getItem('path')
-        window.onload = () => {
+        if(path) {
+            window.onload = () => {
             history.push(path)
+        }
         }
         if(location.pathname.length > 3) {
             localStorage.setItem('path', location.pathname)
@@ -85,13 +92,15 @@ export function Layout() {
     }
     if(location.pathname === '/im') {
         return (
-            <Container>
-                <Header />
-                <Row>
-                    <Col sm={4}>
+            <Container className='layout-container'>
+                <Row className='layout-row'>
+                    <Col sm={1}>
+                        <Header />
+                    </Col>
+                    <Col sm={3}>
                         <Users username={dataUser.getUser.username}/>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={8} className='layout-bigCol'>
                         <EmptyField/>
                     </Col>
                 </Row>
@@ -99,15 +108,19 @@ export function Layout() {
         )
     }
     return (
-        <Container>
-            <Header />
-            <Row>
-                <Col sm={4}>
+        <Container className='layout-container'>
+            <Row className='layout-row'>
+                <Col sm={1}>
+                    <Header />
+                </Col>
+                <Col sm={3}>
                     <Users username={dataUser.getUser.username}/>
                 </Col>
-                <Col sm={8}>
-                    <MessageField messages={messages} chatId={roomId} />
-                    <SendMessage username={dataUser.getUser.username} userId={idUser} chatId={roomId} update={refChat}/>
+                <Col sm={8} className='layout-bigCol d-flex flex-column'>
+                    <div className='layout-message'>
+                        <MessageField messages={messages} chatId={roomId} className='layout-messageField'/>
+                        <SendMessage username={dataUser.getUser.username} userId={idUser} chatId={roomId} update={refChat}/>
+                    </div>
                 </Col>
             </Row>
         </Container>
