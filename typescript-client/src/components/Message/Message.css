@@ -1,0 +1,14 @@
+.message-el {
+    background-color: #202442;
+    border: none;
+}
+
+.message-from {
+    background-color: #406ae0;
+}
+.message-to {
+    background-color: #2b2b57;
+}
+.message-item {
+    border-radius: 20px;
+}
