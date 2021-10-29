@@ -1,0 +1,10 @@
+.beginDial {
+    height: 75vh;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+.beginText{
+    color: white;
+    align-self: center;
+}
