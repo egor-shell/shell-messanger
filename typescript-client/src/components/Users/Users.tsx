@@ -118,6 +118,7 @@ const Users = ({ username }: Props) => {
                                 usersChat.sort((a, b) => {
                                     return a.id - b.id
                                 })
+                                console.log(usersChat)
                                 chatId = usersChat[0].username + usersChat[1].username
                                 const usersId = [Number(usersChat[0].id), Number(usersChat[1].id)]
                                 dispatch(setUsersId(usersId))

@@ -6,7 +6,7 @@ import {useQuery, useSubscription} from "@apollo/client";
 import {Col, Container, Row, Spinner} from "react-bootstrap";
 
 // Files
-import {selectId} from "../../features/currentUserSlice/currentUserSlice";
+import {selectId, selectUsername} from "../../features/currentUserSlice/currentUserSlice";
 import {selectUsersId} from "../../features/usersIdSilce/usersIdSlice";
 import {GET_CHAT, GET_USER} from "../../query/query";
 import {MESSAGE_ADD} from "../../sub/subscribrion";
@@ -49,6 +49,8 @@ export const Layout = () => {
             }
         }
     })
+    // Redux
+    const username: string = useSelector(selectUsername)
 
     // Func
     const escFunc = ((event: KeyboardEvent): void => {
@@ -96,7 +98,7 @@ export const Layout = () => {
                         <Header/>
                     </Col>
                     <Col sm={3}>
-                        <Users username={dataUser?.getUser.username}/>
+                        <Users username={username}/>
                     </Col>
                     <Col sm={8} className='layout-bigCol'>
                         <EmptyField/>
@@ -112,12 +114,12 @@ export const Layout = () => {
                     <Header />
                 </Col>
                 <Col sm={3}>
-                    <Users username={dataUser?.getUser.username}/>
+                    <Users username={username}/>
                 </Col>
                 <Col sm={8} className='d-flex flex-column layout-bigCol'>
                     <div className='layout-message'>
                         <MessageField className='layout-messageField' messages={messages} />
-                        <SendMessage username={dataUser?.getUser.username} userId={idUser} chatId={roomId} update={refChat}/>
+                        <SendMessage username={username} userId={idUser} chatId={roomId} update={refChat}/>
                     </div>
                 </Col>
             </Row>

@@ -43,6 +43,7 @@ const Auth = () => {
                 })
                 setUsername('')
                 setPassword('')
+                console.log(data)
                 localStorage.setItem('token', data.login.token)
                 user = jwtDecode(data.login.token)
             } else {
