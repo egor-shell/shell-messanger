@@ -1,0 +1,11 @@
+.header-exitBtn {
+    background: none;
+    border: none;
+    margin-top: 50px;
+}
+.header-exitBtn:hover {
+
+}
+.header {
+    height: 100%;
+}
